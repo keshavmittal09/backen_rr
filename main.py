@@ -6,7 +6,7 @@ import os
 import re
 import pandas as pd
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import openai
 
 # Load environment variables
 load_dotenv()
@@ -24,7 +24,7 @@ app.add_middleware(
 )
 
 # Initialize OpenAI client (✅ no proxies anymore)
-client = OpenAI(
+client = openai(
     base_url=os.getenv("OPENAI_BASE_URL", "https://models.inference.ai.azure.com"),
     api_key=os.getenv("OPENAI_API_KEY", "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"),
 )
