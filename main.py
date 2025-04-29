@@ -268,7 +268,7 @@ def data_extract(review_text,response):
 def api_out(prompt):
     try:
         response = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("OPENAI_MODEL", "gpt-4o"),
             messages=[
                 {"role": "user", "content": prompt}
             ]
@@ -298,7 +298,7 @@ def detect_fake_review(review_text):
 
         Assess the likelihood of the review being fake or real, based on the factors listed above.
 
-        if you think the given input is not a review but just a random text or the user just gave a question or something similier , then return the answer accordingly and give the fake and real both percentage zero!. 
+        if you think the given input is not a review but just a random text or the user just gave a question or something similier , then return the answer accordingly and give the fake and real both percentage accordingly(i.e fake)!. 
 
         also strictly return accuracy percentage or confidence percentage inside summary in given format :accuracy: ZZ%
 
