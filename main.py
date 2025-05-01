@@ -395,8 +395,11 @@ async def analyze_review(request: ReviewRequest):
 async def get_fake_review_count():
     df = pd.read_csv('review.csv')
 
-    number = len(df["Review"])
-    fake_num = len(df[df['Pred_Result'] == 'fake'])
+    # number = len(df["Review"])
+    # fake_num = len(df[df['Pred_Result'] == 'fake'])
+
+    number = len(list(database.c1.find()))     #len(df["Review"])
+    fake_num = len(list(database.c1.find({"Pred_Result":"fake"}))) 
     
     return {"total_reviews": number,"total_fake_reviews" : fake_num}
 
