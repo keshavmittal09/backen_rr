@@ -191,6 +191,8 @@ import re
 import sys
 import csv 
 import pandas as pd
+import database
+
 # from database import reviews_collection
 # from datetime import datetime
 
@@ -253,6 +255,10 @@ def data_extract(review_text,response):
         # Append the new row to the DataFrame
         # df = df.append(new_data, ignore_index=True)
         new_row_df = pd.DataFrame([new_data])
+        # mongodb data aooend
+        database.c1.insert_one(new_data)
+        print(database.c1)
+        
         df = pd.concat([df, new_row_df], ignore_index=True)
 
         # Write the updated DataFrame back to the CSV file
@@ -279,6 +285,8 @@ def api_out(prompt):
         raise HTTPException(status_code=500, detail=f"Error calling AI service: {str(e)}")
 
 def detect_fake_review(review_text):
+    global r_text
+    r_text = review_text
     prompt = f"""
         Analyze the following customer review and determine whether it is potentially fake or real based on common patterns in online marketplace reviews from India.
         Consider that the grammar may be broken, or the review may use Hinglish (a mix of Hindi and English) or other local languages typically used in Indian reviews.
@@ -431,6 +439,16 @@ async def receive_feedback(feedback: Feedback, request: Request):
             df.at[latest_index, "Text_Feedback"] = ""
 
         df.to_csv("review.csv", index=False)
+        database.c1.update_one(
+            {"Review": r_text},
+            {
+                "$set": {
+                    "User_Feedback": feedback.feedback,
+                    "Text_Feedback": feedback.textFeedback
+                }
+            },
+            upsert=True
+        )
 
         return {"message": "Feedback received successfully"}
     except Exception as e:
